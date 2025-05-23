@@ -1,0 +1,43 @@
+package ${packageName}.service;
+
+import ${packageName}.entity.${table.pascalCaseName};
+import java.util.List;
+
+/**
+ * ${table.name} 服务接口
+ */
+public interface ${table.pascalCaseName}Service {
+    
+    /**
+     * 根据主键查询
+     */
+#foreach($column in $table.columns)
+#if($column.isPrimaryKey)
+    ${table.pascalCaseName} getById(${column.javaType} ${column.camelCaseName});
+#end
+#end
+
+    /**
+     * 查询所有记录
+     */
+    List<${table.pascalCaseName}> findAll();
+    
+    /**
+     * 新增记录
+     */
+    boolean save(${table.pascalCaseName} ${table.camelCaseName});
+    
+    /**
+     * 修改记录
+     */
+    boolean update(${table.pascalCaseName} ${table.camelCaseName});
+    
+    /**
+     * 删除记录
+     */
+#foreach($column in $table.columns)
+#if($column.isPrimaryKey)
+    boolean deleteById(${column.javaType} ${column.camelCaseName});
+#end
+#end
+} 

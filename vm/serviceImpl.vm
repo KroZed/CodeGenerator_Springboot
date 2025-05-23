@@ -1,0 +1,66 @@
+package ${packageName}.service.impl;
+
+import ${packageName}.dao.${table.pascalCaseName}Dao;
+import ${packageName}.entity.${table.pascalCaseName};
+import ${packageName}.service.${table.pascalCaseName}Service;
+import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
+
+/**
+ * ${table.name} 服务实现类
+ */
+@Service
+public class ${table.pascalCaseName}ServiceImpl implements ${table.pascalCaseName}Service {
+
+    @Autowired
+    private ${table.pascalCaseName}Dao ${table.camelCaseName}Dao;
+    
+    /**
+     * 根据主键查询
+     */
+#foreach($column in $table.columns)
+#if($column.isPrimaryKey)
+    @Override
+    public ${table.pascalCaseName} getById(${column.javaType} ${column.camelCaseName}) {
+        return ${table.camelCaseName}Dao.getById(${column.camelCaseName});
+    }
+#end
+#end
+
+    /**
+     * 查询所有记录
+     */
+    @Override
+    public List<${table.pascalCaseName}> findAll() {
+        return ${table.camelCaseName}Dao.findAll();
+    }
+    
+    /**
+     * 新增记录
+     */
+    @Override
+    public boolean save(${table.pascalCaseName} ${table.camelCaseName}) {
+        return ${table.camelCaseName}Dao.insert(${table.camelCaseName}) > 0;
+    }
+    
+    /**
+     * 修改记录
+     */
+    @Override
+    public boolean update(${table.pascalCaseName} ${table.camelCaseName}) {
+        return ${table.camelCaseName}Dao.update(${table.camelCaseName}) > 0;
+    }
+    
+    /**
+     * 删除记录
+     */
+#foreach($column in $table.columns)
+#if($column.isPrimaryKey)
+    @Override
+    public boolean deleteById(${column.javaType} ${column.camelCaseName}) {
+        return ${table.camelCaseName}Dao.deleteById(${column.camelCaseName}) > 0;
+    }
+#end
+#end
+} 

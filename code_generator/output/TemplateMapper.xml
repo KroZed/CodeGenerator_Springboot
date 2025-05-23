@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.prj.dao.TemplateDao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, sys_id, name, path, extra_data, deleted
+    </sql>
+
+    <!-- 根据主键查询 -->
+    <select id="getById" resultType="com.prj.entity.Template">
+        select 
+        <include refid="Base_Column_List"/>
+        from template
+        where id = #{Id}
+    </select>
+
+    <!-- 查询所有记录 -->
+    <select id="findAll" resultType="com.prj.entity.Template">
+        select 
+        <include refid="Base_Column_List"/>
+        from template
+    </select>
+
+    <!-- 新增记录 -->
+    <insert id="insert" parameterType="com.prj.entity.Template" keyProperty="Id" useGeneratedKeys="true">
+        insert into template
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="Id != null">id,</if>
+            <if test="SysId != null">sys_id,</if>
+            <if test="Name != null">name,</if>
+            <if test="Path != null">path,</if>
+            <if test="ExtraData != null">extra_data,</if>
+            <if test="Deleted != null">deleted,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="Id != null">#{Id},</if>
+            <if test="SysId != null">#{SysId},</if>
+            <if test="Name != null">#{Name},</if>
+            <if test="Path != null">#{Path},</if>
+            <if test="ExtraData != null">#{ExtraData},</if>
+            <if test="Deleted != null">#{Deleted},</if>
+        </trim>
+    </insert>
+
+    <!-- 修改记录 -->
+    <update id="update" parameterType="com.prj.entity.Template">
+        update template
+        <set>
+            <if test="SysId != null">sys_id = #{SysId},</if>
+            <if test="Name != null">name = #{Name},</if>
+            <if test="Path != null">path = #{Path},</if>
+            <if test="ExtraData != null">extra_data = #{ExtraData},</if>
+            <if test="Deleted != null">deleted = #{Deleted},</if>
+        </set>
+        where id = #{Id}
+    </update>
+
+    <!-- 删除记录 -->
+    <delete id="deleteById">
+        delete from template
+        where id = #{Id}
+    </delete>
+
+</mapper> 

@@ -1,0 +1,31 @@
+package ${packageName}.entity;
+
+import java.util.Date;
+import java.io.Serializable;
+
+/**
+ * ${table.name} 实体类
+ */
+public class ${table.pascalCaseName} implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+#foreach($column in $table.columns)
+    /**
+     * $!{column.name}
+     */
+    private ${column.javaType} ${column.camelCaseName};
+
+#end
+
+#foreach($column in $table.columns)
+    public ${column.javaType} get${column.pascalCaseName}() {
+        return ${column.camelCaseName};
+    }
+
+    public void set${column.pascalCaseName}(${column.javaType} ${column.camelCaseName}) {
+        this.${column.camelCaseName} = ${column.camelCaseName};
+    }
+
+#end
+} 

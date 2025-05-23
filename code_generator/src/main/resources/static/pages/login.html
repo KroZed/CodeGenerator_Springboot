@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:v-on="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta charset="UTF-8">
+        <title>定制化代码生成系统 - 登录</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="format-detection" content="telephone=no">
+        <link rel="stylesheet" type="text/css" href="../css/normalize.css">
+        <link rel="stylesheet" type="text/css" href="../css/global.css">
+        <link rel="stylesheet" type="text/css" href="../css/pc-main.css">
+        <link rel="stylesheet" type="text/css" href="../js/libs/iview/iview.css">
+        <style type="text/css">
+            html,body{ background-color: #3f7abf;background: url('../images/bg.jpg') no-repeat; background-position:center center; background-size:100% auto; height:100%; }
+        </style>
+    </head>
+     <body class="login">
+        <div id="app" class="content">
+            <form  method="post" class="login-form">
+                <div class="logo-box">
+                    <div style="color: white; font-size: 24px;">定制化代码生成系统</div>
+                </div>
+                <div class="form-box">
+                    <div class="form-group">
+                        <label class="control-label num">账号</label>
+                        <input id="loginName" class="form-input" type="text" autocomplete="off" placeholder="账号" name="loginName" v-model="name">
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label pass">密码</label>
+                        <input id="password" class="form-input" type="password" autocomplete="off" placeholder="密码" name="password" v-model="password">
+                    </div>
+                    <div style="color:red;">{{message}}</div>
+                    <div class="form-actions">
+                        <input name="btnLogin" type="button" class="form-btn" value="登录" v-on:click="login()" style="background-color: #e40d1a;" />
+                    </div>
+                    <div class="form-actions">
+                        <input name="btnRegister" type="button" class="form-btn" value="注册" v-on:click="register()" style="background-color: #0e90d2;" />
+                    </div>
+                </div>
+            </form>
+        </div>
+        <script type="text/javascript" src="../js/libs/vue.min.js"></script>
+        <script type="text/javascript" src="../js/libs/iview/iview.min.js"></script>
+        <script src="../js/jquery.js"></script>
+        <script type="text/javascript" src="../js/common/common.js"></script>
+        <script type="text/javascript" src="../js/common.js"></script>
+        <script type="text/javascript" src="/js/md5.js"></script>
+        <script>
+            var LOGIN_URL = HOST+API_PREFIX+"userAccount/login";
+            var token = null;
+            if (self != top) {
+                top.location.href = HOST+'/login.html';
+            }
+            var app = new Vue({
+                el: "#app",
+                data: {
+                    name: "",
+                    password: "",
+                    vcode:"",
+                    message:""
+                },
+                created: function () {
+                    ajaxCall("/api/userAccount/logout", "GET", {},function(r){
+                    }, function (xhr,status,error) {
+                    });
+                },
+                methods: {
+                    refreshVc:function(){
+                        $("#imgVerCode").attr("src","/api/userAccount/createVCode/"+Math.ceil(Math.random()*10000));
+                    },
+                    register:function(){
+                        window.location="register.html";
+                    },
+                    login: function () {
+                        var me = this;
+                        if (me.name == "")
+                        {
+                            me.message="请输入帐号";
+                            return false;
+                        }
+                        else if (me.password == "") {
+                            me.message="请输入密码";
+                            return false;
+                        }
+                        common.login({loginName:me.name, password:me.password}, function (r) {
+                            token = r;
+                            common.setCookie("TOKEN", token, 60*60*24);
+                            console.log(token);
+                            window.location="index.html";
+                        });
+                    }
+                },
+                computed: {
+                }
+            });
+        </script>
+    </body>
+</html>

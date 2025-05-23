@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>修改资料</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="../js/libs/layui/css/layui.css">
+    <link rel="stylesheet" type="text/css" href="../js/libs/iview/iview.css">
+    <link rel="stylesheet" type="text/css" href="../css/mystyles.css">
+</head>
+<body>
+    <div style="padding: 10px;" id="app">
+        <i-form ref="model" v-bind:model="model" v-bind:rules="ruleValidate" label-width="80">
+            <tabs>
+                <tab-pane label="修改资料">
+                    <form-item label="登录名" prop="loginName">
+                        <i-input v-model="model.loginName" placeholder="登录名" style="width:100%"></i-input>
+                    </form-item>
+                    <form-item label="密码" prop="password">
+                        <i-input v-model="model.password" placeholder="密码" style="width:100%"></i-input>
+                    </form-item>
+                    <form-item label="姓名" prop="realname">
+                        <i-input v-model="model.realname" placeholder="姓名" style="width:100%"></i-input>
+                    </form-item>
+                    <form-item label="电子邮箱" prop="email">
+                        <i-input size="large" v-model="model.email" placeholder="电子邮箱"></i-input>
+                    </form-item>
+                    <form-item>
+                        <i-button type="primary" v-on:click="saveData">提交</i-button>
+                    </form-item>
+                </tab-pane>
+            </tabs>
+        </i-form>
+    </div>
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../js/libs/layui/layui.js"></script>
+    <script type="text/javascript" src="../js/libs/vue.min.js"></script>
+    <script type="text/javascript" src="../js/libs/iview/iview.min.js"></script>
+    <script type="text/javascript" src="../js/common/common.js"></script>
+    <script type="text/javascript" src="../js/common/components/pagination.js"></script>
+    <script type="text/javascript" src="../js/common.js"></script>
+    <script type="text/javascript" src="../js/biz/biz.js"></script>
+    <script src="../ueditor/ueditor.config.js"></script>
+    <script src="../ueditor/ueditor.all.min.js"></script>
+    <script src="../ueditor/lang/zh-cn/zh-cn.js"></script>
+    <script>
+        common.alert = function (msg) {
+            app.$Message.error(msg);
+        }
+    </script>
+    <script>
+        var ENTITY_NAME = "user";
+        var BASE_URL = HOST + API_PREFIX + ENTITY_NAME;
+        var entityId = getRequestParameter("id");
+        var requestMethod = "PUT";
+        var app;
+        (function () {
+            if (entityId == null) {
+                entityId = 0;
+                requestMethod = "POST";
+            }
+            app = new Vue({
+                el: "#app",
+                data: {
+                    currentUser:{id:null, realname:null, role:null, face:null},
+                    model: {
+                        id: entityId,
+                        loginName: null,
+                        password: null,
+                        role: null,
+                        realname: null,
+                        status: '正常',
+                        deleted: false,
+                    },
+                    posting: false,
+                    imgList: [],
+                    ruleValidate: {
+                        loginName: [{required: true, message: '必须填写登录名！' }],
+                        password: [{required: true, message: '必须填写密码！' }],
+                        role: [{required: true, message: '必须填写身份！' }],
+                        realname: [{required: true, message: '必须填写姓名！' }],
+                        status: [{required: true, message: '必须填写状态！' }],
+                    }
+                },
+                created: function () {
+                    var me = this;
+                    common.currentUser(function (r) {
+                        me.currentUser=r;
+                        entityId=r.id;
+                        me.getData();
+                    });
+                    if (entityId) {
+                    }
+                },
+                mounted: function () {
+                    var me = this;
+                },
+                methods: {
+                    getData: function (pageNo) {
+                        var me = this;
+                        if (entityId > 0) {
+                            User.getById(entityId, function (r) {
+                                me.model=r;
+                            });
+                        }
+                    },
+                    saveData: function () {
+                        var me = this;
+                        this.$refs.model.validate(
+                            function (r) {
+                                if (r) {
+                                    me.posting = true;
+                                    User.save(me.model, function (r) {
+                                        me.posting = false;
+                                        me.$Message.success('操作成功');
+                                    });
+                                }
+                            }
+                        );
+                    },
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.prj.dao.UserDao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, sys_id, login_name, password, realname, role, status, extra_data, deleted, email
+    </sql>
+
+    <!-- 根据主键查询 -->
+    <select id="getById" resultType="com.prj.entity.User">
+        select 
+        <include refid="Base_Column_List"/>
+        from user
+        where id = #{Id}
+    </select>
+
+    <!-- 查询所有记录 -->
+    <select id="findAll" resultType="com.prj.entity.User">
+        select 
+        <include refid="Base_Column_List"/>
+        from user
+    </select>
+
+    <!-- 新增记录 -->
+    <insert id="insert" parameterType="com.prj.entity.User" keyProperty="Id" useGeneratedKeys="true">
+        insert into user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="Id != null">id,</if>
+            <if test="SysId != null">sys_id,</if>
+            <if test="LoginName != null">login_name,</if>
+            <if test="Password != null">password,</if>
+            <if test="Realname != null">realname,</if>
+            <if test="Role != null">role,</if>
+            <if test="Status != null">status,</if>
+            <if test="ExtraData != null">extra_data,</if>
+            <if test="Deleted != null">deleted,</if>
+            <if test="Email != null">email,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="Id != null">#{Id},</if>
+            <if test="SysId != null">#{SysId},</if>
+            <if test="LoginName != null">#{LoginName},</if>
+            <if test="Password != null">#{Password},</if>
+            <if test="Realname != null">#{Realname},</if>
+            <if test="Role != null">#{Role},</if>
+            <if test="Status != null">#{Status},</if>
+            <if test="ExtraData != null">#{ExtraData},</if>
+            <if test="Deleted != null">#{Deleted},</if>
+            <if test="Email != null">#{Email},</if>
+        </trim>
+    </insert>
+
+    <!-- 修改记录 -->
+    <update id="update" parameterType="com.prj.entity.User">
+        update user
+        <set>
+            <if test="SysId != null">sys_id = #{SysId},</if>
+            <if test="LoginName != null">login_name = #{LoginName},</if>
+            <if test="Password != null">password = #{Password},</if>
+            <if test="Realname != null">realname = #{Realname},</if>
+            <if test="Role != null">role = #{Role},</if>
+            <if test="Status != null">status = #{Status},</if>
+            <if test="ExtraData != null">extra_data = #{ExtraData},</if>
+            <if test="Deleted != null">deleted = #{Deleted},</if>
+            <if test="Email != null">email = #{Email},</if>
+        </set>
+        where id = #{Id}
+    </update>
+
+    <!-- 删除记录 -->
+    <delete id="deleteById">
+        delete from user
+        where id = #{Id}
+    </delete>
+
+</mapper> 

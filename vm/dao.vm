@@ -1,0 +1,46 @@
+package ${packageName}.dao;
+
+import ${packageName}.entity.${table.pascalCaseName};
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import java.util.List;
+
+/**
+ * ${table.name} 数据访问层
+ */
+@Mapper
+public interface ${table.pascalCaseName}Dao {
+    
+    /**
+     * 根据主键查询
+     */
+#foreach($column in $table.columns)
+#if($column.isPrimaryKey)
+    ${table.pascalCaseName} getById(@Param("${column.camelCaseName}") ${column.javaType} ${column.camelCaseName});
+#end
+#end
+
+    /**
+     * 查询所有记录
+     */
+    List<${table.pascalCaseName}> findAll();
+    
+    /**
+     * 新增记录
+     */
+    int insert(${table.pascalCaseName} ${table.camelCaseName});
+    
+    /**
+     * 修改记录
+     */
+    int update(${table.pascalCaseName} ${table.camelCaseName});
+    
+    /**
+     * 删除记录
+     */
+#foreach($column in $table.columns)
+#if($column.isPrimaryKey)
+    int deleteById(@Param("${column.camelCaseName}") ${column.javaType} ${column.camelCaseName});
+#end
+#end
+} 

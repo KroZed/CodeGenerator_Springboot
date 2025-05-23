@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="${packageName}.dao.${table.pascalCaseName}Dao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+#set($columnList = "")
+#foreach($column in $table.columns)
+#if($columnList != "")#set($columnList = $columnList + ", ")#end
+#set($columnList = $columnList + $column.name)
+#end
+        ${columnList}
+    </sql>
+
+    <!-- 根据主键查询 -->
+#foreach($column in $table.columns)
+#if($column.isPrimaryKey)
+    <select id="getById" resultType="${packageName}.entity.${table.pascalCaseName}">
+        select 
+        <include refid="Base_Column_List"/>
+        from ${table.name}
+        where ${column.name} = #{${column.camelCaseName}}
+    </select>
+#end
+#end
+
+    <!-- 查询所有记录 -->
+    <select id="findAll" resultType="${packageName}.entity.${table.pascalCaseName}">
+        select 
+        <include refid="Base_Column_List"/>
+        from ${table.name}
+    </select>
+
+    <!-- 新增记录 -->
+    <insert id="insert" parameterType="${packageName}.entity.${table.pascalCaseName}"#foreach($column in $table.columns)#if($column.isPrimaryKey) keyProperty="${column.camelCaseName}" useGeneratedKeys="true"#end#end>
+        insert into ${table.name}
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+#foreach($column in $table.columns)
+            <if test="${column.camelCaseName} != null">${column.name},</if>
+#end
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+#foreach($column in $table.columns)
+            <if test="${column.camelCaseName} != null">#{${column.camelCaseName}},</if>
+#end
+        </trim>
+    </insert>
+
+    <!-- 修改记录 -->
+    <update id="update" parameterType="${packageName}.entity.${table.pascalCaseName}">
+        update ${table.name}
+        <set>
+#foreach($column in $table.columns)
+#if(!$column.isPrimaryKey)
+            <if test="${column.camelCaseName} != null">${column.name} = #{${column.camelCaseName}},</if>
+#end
+#end
+        </set>
+#foreach($column in $table.columns)
+#if($column.isPrimaryKey)
+        where ${column.name} = #{${column.camelCaseName}}
+#end
+#end
+    </update>
+
+    <!-- 删除记录 -->
+#foreach($column in $table.columns)
+#if($column.isPrimaryKey)
+    <delete id="deleteById">
+        delete from ${table.name}
+        where ${column.name} = #{${column.camelCaseName}}
+    </delete>
+#end
+#end
+
+</mapper> 

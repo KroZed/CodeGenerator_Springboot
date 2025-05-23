@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.prj.dao.ProjectDao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, sys_id, owner_id, type, name, db_host, port, db_schema, db_username, db_password, template_id, output_path, extra_data, deleted
+    </sql>
+
+    <!-- 根据主键查询 -->
+    <select id="getById" resultType="com.prj.entity.Project">
+        select 
+        <include refid="Base_Column_List"/>
+        from project
+        where id = #{Id}
+    </select>
+
+    <!-- 查询所有记录 -->
+    <select id="findAll" resultType="com.prj.entity.Project">
+        select 
+        <include refid="Base_Column_List"/>
+        from project
+    </select>
+
+    <!-- 新增记录 -->
+    <insert id="insert" parameterType="com.prj.entity.Project" keyProperty="Id" useGeneratedKeys="true">
+        insert into project
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="Id != null">id,</if>
+            <if test="SysId != null">sys_id,</if>
+            <if test="OwnerId != null">owner_id,</if>
+            <if test="Type != null">type,</if>
+            <if test="Name != null">name,</if>
+            <if test="DbHost != null">db_host,</if>
+            <if test="Port != null">port,</if>
+            <if test="DbSchema != null">db_schema,</if>
+            <if test="DbUsername != null">db_username,</if>
+            <if test="DbPassword != null">db_password,</if>
+            <if test="TemplateId != null">template_id,</if>
+            <if test="OutputPath != null">output_path,</if>
+            <if test="ExtraData != null">extra_data,</if>
+            <if test="Deleted != null">deleted,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="Id != null">#{Id},</if>
+            <if test="SysId != null">#{SysId},</if>
+            <if test="OwnerId != null">#{OwnerId},</if>
+            <if test="Type != null">#{Type},</if>
+            <if test="Name != null">#{Name},</if>
+            <if test="DbHost != null">#{DbHost},</if>
+            <if test="Port != null">#{Port},</if>
+            <if test="DbSchema != null">#{DbSchema},</if>
+            <if test="DbUsername != null">#{DbUsername},</if>
+            <if test="DbPassword != null">#{DbPassword},</if>
+            <if test="TemplateId != null">#{TemplateId},</if>
+            <if test="OutputPath != null">#{OutputPath},</if>
+            <if test="ExtraData != null">#{ExtraData},</if>
+            <if test="Deleted != null">#{Deleted},</if>
+        </trim>
+    </insert>
+
+    <!-- 修改记录 -->
+    <update id="update" parameterType="com.prj.entity.Project">
+        update project
+        <set>
+            <if test="SysId != null">sys_id = #{SysId},</if>
+            <if test="OwnerId != null">owner_id = #{OwnerId},</if>
+            <if test="Type != null">type = #{Type},</if>
+            <if test="Name != null">name = #{Name},</if>
+            <if test="DbHost != null">db_host = #{DbHost},</if>
+            <if test="Port != null">port = #{Port},</if>
+            <if test="DbSchema != null">db_schema = #{DbSchema},</if>
+            <if test="DbUsername != null">db_username = #{DbUsername},</if>
+            <if test="DbPassword != null">db_password = #{DbPassword},</if>
+            <if test="TemplateId != null">template_id = #{TemplateId},</if>
+            <if test="OutputPath != null">output_path = #{OutputPath},</if>
+            <if test="ExtraData != null">extra_data = #{ExtraData},</if>
+            <if test="Deleted != null">deleted = #{Deleted},</if>
+        </set>
+        where id = #{Id}
+    </update>
+
+    <!-- 删除记录 -->
+    <delete id="deleteById">
+        delete from project
+        where id = #{Id}
+    </delete>
+
+</mapper> 

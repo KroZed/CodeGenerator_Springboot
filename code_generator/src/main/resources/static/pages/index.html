@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:v-on="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta charset="UTF-8">
+        <title>定制化代码生成系统</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="format-detection" content="telephone=no">
+        <link rel="stylesheet" type="text/css" href="../css/normalize.css">
+        <link rel="stylesheet" type="text/css" href="../css/global.css">
+        <link rel="stylesheet" type="text/css" href="../css/pc-main.css">
+        <link rel="stylesheet" type="text/css" href="../js/libs/iview/iview.css">
+    </head>
+    <body>
+        <div id="app">
+            <div class="layout">
+                <i-menu mode="horizontal" theme="primary">
+                    <div class="layout-logo" v-on:click="goHome" style="color: white; font-size: 18px; vertical-align: top; height: 60px; top:0px; ">定制化代码生成系统</div>
+                    <div class="layout-nav">
+                    </div>
+                    <div class="layout-ceiling">
+                        <dropdown class="layout-ceiling-main" @on-click="onMenuClick">
+                            <a>
+                                {{data.currentUserName}}
+                                <icon type="arrow-down-b"></icon>
+                            </a>
+                            <dropdown-menu slot="list">
+                                <dropdown-item name="usercenter">返回首页</dropdown-item>
+                                <dropdown-item name="logout">退出登录</dropdown-item>
+                            </dropdown-menu>
+                        </dropdown>
+                        <avatar icon="person" v-bind:src="data.currentHeadImg" />
+                    </div>
+                </i-menu>
+                <row type="flex">
+                    <i-col span="3" class="layout-menu-left">
+                        <i-menu theme="dark" width="auto" open-names="['1']">
+                            <submenu name="1" v-if="data.currentRole==='管理员'">
+                                <template slot="title">
+                                    <icon type="document-text"></icon>
+                                    管理员功能
+                                </template>
+                                <menu-item name="editInfo"><div v-on:click="menuSelect('user_editInfo.html')">修改资料</div></menu-item>
+                                <menu-item name="user_list"><div v-on:click="menuSelect('user_list.html')">用户管理</div></menu-item>
+                                <menu-item name="project_list"><div v-on:click="menuSelect('project_list.html')">项目管理</div></menu-item>
+                                <menu-item name="template_list"><div v-on:click="menuSelect('template_list.html')">模板管理</div></menu-item>
+                                <menu-item name="templateFile_list"><div v-on:click="menuSelect('templateFile_list.html')">模板文件管理</div></menu-item>
+                            </submenu>
+                            <submenu name="1" v-if="data.currentRole==='用户'">
+                                <template slot="title">
+                                    <icon type="document-text"></icon>
+                                    用户功能
+                                </template>
+                                <menu-item name="editInfo"><div v-on:click="menuSelect('user_editInfo.html')">修改资料</div></menu-item>
+                                <menu-item name="project_list"><div v-on:click="menuSelect('project_list.html')">项目管理</div></menu-item>
+                                <menu-item name="template_list"><div v-on:click="menuSelect('template_list.html')">模板管理</div></menu-item>
+                                <menu-item name="templateFile_list"><div v-on:click="menuSelect('templateFile_list.html')">模板文件管理</div></menu-item>
+                            </submenu>
+                        </i-menu>
+                    </i-col>
+                    <i-col span="21">
+                        <div class="layout-content">
+                            <iframe id="myFrame" src="main.html" style="width:100%; height:100%;border:none; "></iframe>
+                        </div>
+                    </i-col>
+                </row>
+            </div>
+            <modal v-model="editModal" v-bind:width="800">
+                <iframe style="width:100%; border-width:0px; min-height:500px;" id="editFrame"></iframe>
+                <div slot="footer"></div>
+            </modal>
+        </div>
+        <script type="text/javascript" src="../js/libs/vue.min.js"></script>
+        <script type="text/javascript" src="../js/libs/iview/iview.min.js"></script>
+        <script type="text/javascript" src="../js/jquery.js"></script>
+        <script type="text/javascript" src="../js/common/common.js"></script>
+        <script type="text/javascript" src="../js/common.js"></script>
+        <script>
+            var app = new Vue({
+                el: "#app",
+                data: {
+                    data: {
+                        currentUserId: '1',
+                        currentUserName: '',
+                        currentRole:'',
+                        currentHeadImg: '/images/bg.jpg',
+                        ActiveModule: "1",
+                        postIng: false,
+                        spanLeft: 3,
+                        spanRight: 21,
+                        currentUser:null,
+                    },
+                    editModal: false
+                },
+                created: function () {
+                    var me = this;
+                    common.currentUser(function (r) {
+                        me.currentUser = r;
+                        me.data.currentUserId = r.id;
+                        me.data.currentUserName=r.name;
+                        me.data.currentRole=r.role;
+                        me.data.currentHeadImg=r.face;
+                    }, true, "login.html");
+                },
+                mounted:function(){
+                    var _self = this;
+                },
+                methods:{
+                    menuSelect: function (item) {
+                        if (item ) {
+                            $("#myFrame").attr("src", item);
+                        }
+                    },
+                    toggleClick:function () {
+                        if (this.data.spanLeft === 3) {
+                            this.data.spanLeft = 1;
+                            this.data.spanRight = 23;
+                        } else {
+                            this.data.spanLeft = 3;
+                            this.data.spanRight = 21;
+                        }
+                    },
+                    openWin: function (url) {
+                        $("#editFrame").attr("src", url);
+                        this.editModal = true;
+                    },
+                    closeWin: function () {
+                        this.editModal = false;
+                        this.logout();
+                    },
+                    logout: function () {
+                        window.location.href = 'login.html';
+                    },
+                    changepwd: function () {
+                    },
+                    goHome: function () {
+                        $("#myFrame").attr("src", 'main.html');
+                    },
+                    onMenuClick: function (name) {
+                        name = "this." + name;
+                        var exp = "if(" + name + " && typeof(" + name + ") === 'function') { " + name + "(); } else { common.alert('" + name + "尚未实现！');}";
+                        eval(exp);
+                    },
+                    usercenter: function () {
+                        this.goHome();
+                    }
+                },
+                computed: {
+                    iconSize :function () {
+                        return this.data.spanLeft === 5 ? 14 : 24;
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>
